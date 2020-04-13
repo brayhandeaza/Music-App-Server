@@ -1,10 +1,11 @@
 const express = require('express')
+require('dotenv').config()
 const bodyParder = require('body-parser')
 const app = express()
 const db = require('./db')
-
+const address = require('address')
 //Routes 
-const Routes = require('./routes/index');
+const Routes = require('./routes/index')
 
 app.use(bodyParder.json())
 
@@ -25,7 +26,10 @@ app.get('/', async (req,res) => {
 db.authenticate().then((res) => {
     console.log("Database is connected")
 })
-const port = process.env.PORT || 3000
-app.listen(port, () => {
-    console.log(`Listening on port: ${port}`) 
+
+app.listen(process.env.PORT, process.env.HOST, async () => {
+    console.log(`\nListening local on: http://${process.env.HOST}:${process.env.PORT}`) 
+    await app.listen(process.env.PORT, address.ip(), () => {
+        console.log(`Listening on own network on: http://${address.ip()}:${process.env.PORT}\n\n`) 
+    })
 })
